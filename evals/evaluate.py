@@ -23,14 +23,11 @@ from langchain_openai import ChatOpenAI
 from rag.pipeline import retrieve
 
 # Generation LLM (answering the tickets).
-# Arch decision: llama3.2 drafts were not faithfully grounded (faithfulness 0.76-0.47).
-# deepseek-v4-flash on OpenCode Go produces better-grounded answers; both gen + judge
-# ride the flat $10/mo subscription, so marginal cost stays ~$0.
-llm = ChatOpenAI(
-    model="deepseek-v4-flash",
-    base_url="https://opencode.ai/zen/go/v1",
-    api_key=os.getenv("OPENCODE_API_KEY"),
-)
+# Arch decision (measured, 27 Aug 2026): llama3.2 OUTPERFORMS deepseek here.
+# Faithfulness by config: llama3.2+default=0.756 (best), deepseek+strict=0.644,
+# llama3.2+strict=0.472. Better/cloud model != better grounding. Keep gen local
+# (free) and put budget into retrieval/prompt quality instead.
+llm = ChatOllama(model="llama3.2")
 
 # Judge LLM for RAGAS — RAGAS legacy metrics need reliable structured JSON.
 # OpenCode Go (flat $10/mo subscription, already active) exposes an
@@ -45,9 +42,8 @@ judge = LangchainLLMWrapper(
 )
 
 GENERATION_PROMPT = (
-    "You are a support assistant. Answer ONLY using the facts in the CONTEXT below. "
-    "Do NOT add any information not in the context. If the context cannot answer, "
-    'say exactly: "I cannot answer from the available knowledge base."\n\n'
+    "You are a support assistant. Answer the question using the facts in the "
+    "CONTEXT below. Base your answer only on what the context supports.\n\n"
     "CONTEXT:\n{ctx}\n\nQUESTION: {q}\n\nANSWER:"
 )
 
