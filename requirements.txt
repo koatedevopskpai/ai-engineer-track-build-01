@@ -1,0 +1,9 @@
+fastapi[standard]
+uvicorn
+langgraph
+langchain-ollama
+langchain-openai
+psycopg2-binary
+pgvector
+sentence-transformers
+pydantic
