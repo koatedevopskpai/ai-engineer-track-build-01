@@ -1,0 +1,15 @@
+name = "ai-customer-service-agent"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+"fastapi[standard]",
+"uvicorn",
+"langgraph",
+"langchain-ollama",
+"langchain-openai",
+"psycopg2-binary",
+"pgvector",
+"sentence-transformers",
+"ragas",
+"pydantic",
+]
