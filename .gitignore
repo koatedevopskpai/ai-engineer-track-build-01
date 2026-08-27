@@ -1,4 +1,8 @@
 .venv/
 __pycache__/
 *.db
+*.sqlite*
 .env
+# generated data (recreatable via generator.py)
+golden_set.json
+corpus.txt
